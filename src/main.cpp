@@ -5,17 +5,16 @@
 #include <ESP8266mDNS.h>
 
 #include <OneWire.h>
-#include <DallasTemperature.h>
+
 
 #include <SimpleDHT.h>
 
-#define ONE_WIRE_BUS 15
+
 
 int pinDHT11 = 13;
 SimpleDHT11 dht11;
 
-OneWire oneWire(ONE_WIRE_BUS);
-DallasTemperature sensors(&oneWire);
+
 
 MDNSResponder mdns;
 
@@ -36,7 +35,7 @@ int D1_pin = 5;
 
 String webPage()
 {
-  sensors.requestTemperatures();
+
   byte temperature = 0;
   byte humidity = 0;
   dht11.read(pinDHT11, &temperature, &humidity, NULL); 
@@ -81,12 +80,7 @@ String webPage()
   }
   web += "<div style=\"text-align: center;margin: 5px 0px;\"> <a href=\"socket3On\"><button>ON</button></a>&nbsp;<a href=\"socket3Off\"><button>OFF</button></a></div>";
   // ++++++++ LED-3 +++++++++++++
-  
-   //++++++++++ DS18B20 TEMP  +++++++++++++
-  web += "<p style=\"text-align: center;margin-top: 0px;margin-bottom: 5px;\">----DS18B20 TEMP----</p>";
-  web += "<div style=\"text-align: center;width: 98px;color:white ;padding: 10px 30px;background-color: #5191e4;margin: 0 auto;\">"+ String(sensors.getTempCByIndex(0))+"</div>";
-  // ++++++++ DS18B20 TEMP  +++++++++++++
-  
+
   //++++++++++ DHT11 TEMP  +++++++++++++
   web += "<p style=\"text-align: center;margin-top: 0px;margin-bottom: 5px;\">----DHT11 TEMP----</p>";
   web += "<div style=\"text-align: center;width: 98px;color:white ;padding: 10px 30px;background-color: #5191e4;margin: 0 auto;\">"+ String((int)temperature)+"</div>";
@@ -116,7 +110,7 @@ void setup(void){
   pinMode(D1_pin, OUTPUT);
   digitalWrite(D1_pin, LOW);
  
-  sensors.begin();
+
 
   delay(100);
   Serial.begin(115200);
