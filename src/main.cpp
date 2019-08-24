@@ -33,7 +33,8 @@ int D0_pin = 16;
 int D2_pin = 2;//d4
 int D1_pin = 5;
 
-bool led1State = false; //cjcnjzybt 
+bool ledState = false; // состояние кнопки 3
+int ledBrig = 0; //яркость 
 
 
 
@@ -75,7 +76,7 @@ String webPage()
   
   //++++++++++ LED-3  +++++++++++++
   web += "<p style=\"text-align: center;margin-top: 0px;margin-bottom: 5px;\">----LED 3----</p>";
-  if (digitalRead(D1_pin) == 1)
+  if (ledState == true)
   {
     web += "<div style=\"text-align: center;width: 98px;color:white ;padding: 10px 30px;background-color: #43a209;margin: 0 auto;\">ON</div>";
   }
@@ -113,7 +114,7 @@ void setup(void){
   pinMode(D2_pin, OUTPUT);
   digitalWrite(D2_pin, LOW);
   pinMode(D1_pin, OUTPUT);
-  digitalWrite(D1_pin, LOW);
+  //digitalWrite(D1_pin, LOW);
  
 
 
@@ -174,17 +175,15 @@ void setup(void){
    //+++++++++++++++++++++++ START  LED-3  ++++++++++++++++++++ 
 
   server.on("/socket3On", [](){
-   // digitalWrite(D1_pin, HIGH);
-   // server.send(200, "text/html", webPage());
-   // delay(100);    
-   led1State=true;
-
+    ledState = true;//digitalWrite(D1_pin, HIGH);
+    server.send(200, "text/html", webPage());
+    delay(100);    
+   
   });
   server.on("/socket3Off", [](){
-   // digitalWrite(D1_pin, LOW);
-   // server.send(200, "text/html", webPage());
-   // delay(100);
-   led1State=false;
+    ledState = false; //digitalWrite(D1_pin, LOW);
+    server.send(200, "text/html", webPage());
+    delay(100);
 
    }); 
    // +++++++++++++++++++++++ END  LED-3 ++++++++++++++++++++
@@ -197,5 +196,14 @@ void setup(void){
  
 void loop(void){
   server.handleClient();
+  if (ledState==true && ledBrig != 1023) {
+    ledBrig++;
+    delay(3);
+  }
+    if (ledState==false && ledBrig != 0) {
+    ledBrig--;
+    delay(3);
+  }
+  analogWrite(D1_pin, ledBrig);
 } 
 
