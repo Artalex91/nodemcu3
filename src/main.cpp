@@ -33,6 +33,11 @@ int D0_pin = 16;
 int D2_pin = 2;//d4
 int D1_pin = 5;
 
+bool led1State = false; //cjcnjzybt 
+
+
+
+
 String webPage()
 {
 
@@ -169,14 +174,18 @@ void setup(void){
    //+++++++++++++++++++++++ START  LED-3  ++++++++++++++++++++ 
 
   server.on("/socket3On", [](){
-    digitalWrite(D1_pin, HIGH);
-    server.send(200, "text/html", webPage());
-    delay(100);    
+   // digitalWrite(D1_pin, HIGH);
+   // server.send(200, "text/html", webPage());
+   // delay(100);    
+   led1State=true;
+
   });
   server.on("/socket3Off", [](){
-    digitalWrite(D1_pin, LOW);
-    server.send(200, "text/html", webPage());
-    delay(100);
+   // digitalWrite(D1_pin, LOW);
+   // server.send(200, "text/html", webPage());
+   // delay(100);
+   led1State=false;
+
    }); 
    // +++++++++++++++++++++++ END  LED-3 ++++++++++++++++++++
     
