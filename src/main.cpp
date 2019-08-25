@@ -3,10 +3,7 @@
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
-
-#include <OneWire.h>
-
-
+//#include <OneWire.h>
 #include <SimpleDHT.h>
 
 
@@ -30,7 +27,7 @@ IPAddress subnet(255,255,255,0);
 ESP8266WebServer server(80);
 
 int D0_pin = 16;
-int D4_pin = 2;//d4
+int D4_pin = 2;
 int D1_pin = 5;
 
 bool ledState = false; // состояние кнопки 3
