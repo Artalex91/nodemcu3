@@ -30,7 +30,7 @@ IPAddress subnet(255,255,255,0);
 ESP8266WebServer server(80);
 
 int D0_pin = 16;
-int D2_pin = 2;//d4
+int D4_pin = 2;//d4
 int D1_pin = 5;
 
 bool ledState = false; // состояние кнопки 3
@@ -63,7 +63,7 @@ String webPage()
   
   //++++++++++ LED-2  +++++++++++++
   web += "<p style=\"text-align: center;margin-top: 0px;margin-bottom: 5px;\">----LED 2----</p>";
-  if (digitalRead(D2_pin) == 1)
+  if (digitalRead(D4_pin) == 1)
   {
     web += "<div style=\"text-align: center;width: 98px;color:white ;padding: 10px 30px;background-color: #43a209;margin: 0 auto;\">ON</div>";
   }
@@ -111,8 +111,8 @@ void setup(void){
   // preparing GPIOs
   pinMode(D0_pin, OUTPUT);
   digitalWrite(D0_pin, LOW);
-  pinMode(D2_pin, OUTPUT);
-  digitalWrite(D2_pin, LOW);
+  pinMode(D4_pin, OUTPUT);
+  digitalWrite(D4_pin, LOW);
   pinMode(D1_pin, OUTPUT);
   //digitalWrite(D1_pin, LOW);
  
@@ -161,12 +161,12 @@ void setup(void){
    //+++++++++++++++++++++++ START  LED-2  ++++++++++++++++++++ 
   
   server.on("/socket2On", [](){
-    digitalWrite(D2_pin, HIGH);
+    digitalWrite(D4_pin, HIGH);
     server.send(200, "text/html", webPage());
     delay(100);    
   });
   server.on("/socket2Off", [](){
-    digitalWrite(D2_pin, LOW);
+    digitalWrite(D4_pin, LOW);
     server.send(200, "text/html", webPage());
     delay(100);
     });  
