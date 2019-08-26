@@ -6,37 +6,41 @@
 //#include <OneWire.h>
 #include <SimpleDHT.h>
 
-
-
 int pinDHT11 = 13;
 SimpleDHT11 dht11;
-
-
 
 MDNSResponder mdns;
 
 // Wi-Fi
-const char* ssid = "Rostelecom_59C8";
-const char* password = "CSQ67hTx";
+ const char* ssid = "Rostelecom_59C8";
+ const char* password = "CSQ67hTx";
+ byte arduino_mac[] = { 0xDE, 0xED, 0xBA, 0xFE, 0xFE, 0xED };
+ IPAddress ip(192,168,1,35);
+ IPAddress gateway(192,168,1,1);
+ IPAddress subnet(255,255,255,0);
+ ESP8266WebServer server(80);
 
-byte arduino_mac[] = { 0xDE, 0xED, 0xBA, 0xFE, 0xFE, 0xED };
-IPAddress ip(192,168,1,35);
-IPAddress gateway(192,168,1,1);
-IPAddress subnet(255,255,255,0);
+// пины
+  int D0_pin = 16;
+  int D4_pin = 2;
+  int D1_pin = 5;
 
-ESP8266WebServer server(80);
-
-int D0_pin = 16;
-int D4_pin = 2;
-int D1_pin = 5;
-
-bool ledState = false; // состояние кнопки 3
-int ledBrig = 0; //яркость 
+  #define radarPin 1
+  #define led1_pin 6
+  #define led2_pin 7
+  #define led3_pin 8
 
 
+// переменные 
+  bool ledState = false; // состояние кнопки 3
+  int ledBrig = 0; //яркость 
+
+  bool radar = false; //состояние радара (движение есть/нет)
 
 
-String webPage()
+
+
+String webPage() // вэб страница
 {
 
   byte temperature = 0;
@@ -103,6 +107,22 @@ String webPage()
   return(web);
 }
 
+void readPorts(){
+ radar = digitalRead(radarPin);
+} 
+
+void task(){
+ if (radar == true){
+   
+ }
+}
+
+void writePorts(){
+ analogWrite(led1_pin, ledBrig);
+ analogWrite(led2_pin, ledBrig);
+ analogWrite(led3_pin, ledBrig);
+
+}
 
 void setup(void){
   // preparing GPIOs
@@ -193,7 +213,11 @@ void setup(void){
  
 void loop(void){
   server.handleClient();
-  if (ledState==true && ledBrig != 1023) {
+  readPorts();
+  task();
+  writePorts();
+
+  /*if (ledState==true && ledBrig != 1023) {
     ledBrig++;
     delay(3);
   }
@@ -201,6 +225,6 @@ void loop(void){
     ledBrig--;
     delay(3);
   }
-  analogWrite(D1_pin, ledBrig);
+  analogWrite(D1_pin, ledBrig);*/
 } 
 
