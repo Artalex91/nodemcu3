@@ -37,7 +37,10 @@ MDNSResponder mdns;
   uint32_t ledStateMill = 0;
   int ledInterval = 5000; 
 
-  int ledBrig = 0; //яркость 
+  int maxBrig = 1023;
+  int ledBrig1 = 0; //яркость 1
+  int ledBrig2 = 0; //яркость 2
+  int ledBrig3 = 0; //яркость 3
   uint32_t brigMill = 0;
   uint8_t brigSpeed = 3; //чем меньше - тем быстрее розжиг
 
@@ -134,14 +137,33 @@ void task(){
     }
 
  //розжиг
-    if (millis() - brigMill > brigSpeed && ledState == true && ledBrig !=1023){
-      ledBrig++;
+    //led 1
+    if (millis() - brigMill > brigSpeed && ledState == true && ledBrig1 !=maxBrig){ 
+      ledBrig1++;
       brigMill=millis();
     }
-    if (millis() - brigMill > brigSpeed && ledState == false && ledBrig !=0){
-      ledBrig--;
+    if (millis() - brigMill > brigSpeed && ledState == false && ledBrig1 !=0){
+      ledBrig1--;
+      brigMill=millis();
+    }//led 1
+    //led 2
+    if (millis() - brigMill > brigSpeed && ledState == true && ledBrig1 > maxBrig/3 && ledBrig2 !=maxBrig){
+      ledBrig2++;
       brigMill=millis();
     }
+    if (millis() - brigMill > brigSpeed && ledState == false && ledBrig1 < maxBrig/3 && ledBrig2 !=0){
+      ledBrig2--;
+      brigMill=millis();
+    }//led 2
+    // led 3
+    if (millis() - brigMill > brigSpeed && ledState == true && ledBrig2 > maxBrig/3 && ledBrig3 !=maxBrig){
+      ledBrig3++;
+      brigMill=millis();
+    }
+    if (millis() - brigMill > brigSpeed && ledState == false && ledBrig2 < maxBrig/3 && ledBrig3 !=0){
+      ledBrig3--;
+      brigMill=millis();
+    }//led 3
 
 
 }
@@ -226,13 +248,13 @@ void setup(void){
    //+++++++++++++++++++++++ START  LED-3  ++++++++++++++++++++ 
 
   server.on("/socket3On", [](){
-    ledState = true;//digitalWrite(D1_pin, HIGH);
+    maxBrig = 1023;//ledState = true;//digitalWrite(D1_pin, HIGH);
     server.send(200, "text/html", webPage());
     delay(100);    
    
   });
   server.on("/socket3Off", [](){
-    ledState = false; //digitalWrite(D1_pin, LOW);
+    maxBrig = 411;//ledState = false; //digitalWrite(D1_pin, LOW);
     server.send(200, "text/html", webPage());
     delay(100);
 
@@ -251,14 +273,5 @@ void loop(void){
   task();
   writePorts();
 
-  /*if (ledState==true && ledBrig != 1023) {
-    ledBrig++;
-    delay(3);
-  }
-    if (ledState==false && ledBrig != 0) {
-    ledBrig--;
-    delay(3);
-  }
-  analogWrite(D1_pin, ledBrig);*/
 } 
 
