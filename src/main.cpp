@@ -35,14 +35,14 @@ MDNSResponder mdns;
   bool ledState = false; // состояние кнопки 3
   bool ledMillFlag = false;
   uint32_t ledStateMill = 0;
-  int ledInterval = 5000; 
+  uint16_t ledInterval = 5000; 
 
   int maxBrig = 1023;
   int ledBrig1 = 0; //яркость 1
   int ledBrig2 = 0; //яркость 2
   int ledBrig3 = 0; //яркость 3
   uint32_t brigMill = 0;
-  uint8_t brigSpeed = 3; //чем меньше - тем быстрее розжиг
+  uint8_t brigSpeed = 2; //чем меньше - тем быстрее розжиг
 
   bool radar = false; //состояние радара (движение есть/нет)
 
@@ -73,7 +73,7 @@ String webPage() // вэб страница
   
   //++++++++++ LED-2  +++++++++++++
   web += "<p style=\"text-align: center;margin-top: 0px;margin-bottom: 5px;\">----LED 2----</p>";
-  if (digitalRead(D4_pin) == 1)
+  if(radar == true)//if (digitalRead(D4_pin) == 1)
   {
     web += "<div style=\"text-align: center;width: 98px;color:white ;padding: 10px 30px;background-color: #43a209;margin: 0 auto;\">ON</div>";
   }
@@ -86,7 +86,7 @@ String webPage() // вэб страница
   
   //++++++++++ LED-3  +++++++++++++
   web += "<p style=\"text-align: center;margin-top: 0px;margin-bottom: 5px;\">----LED 3----</p>";
-  if (ledState == true)
+  if (maxBrig == 1023)
   {
     web += "<div style=\"text-align: center;width: 98px;color:white ;padding: 10px 30px;background-color: #43a209;margin: 0 auto;\">ON</div>";
   }
@@ -169,10 +169,10 @@ void task(){
 }
 
 void writePorts(){
- analogWrite(led1_pin, ledBrig);
- analogWrite(led2_pin, ledBrig);
- analogWrite(led3_pin, ledBrig);
-
+ analogWrite(led1_pin, ledBrig1);
+ analogWrite(led2_pin, ledBrig2);
+ analogWrite(led3_pin, ledBrig3);
+ digitalWrite(D4_pin, radar);
 }
 
 void setup(void){
@@ -230,7 +230,7 @@ void setup(void){
     delay(100);
  });   
    //+++++++++++++++++++++++ END  LED-1 ++++++++++++++++++++ 
-    
+    /*
    //+++++++++++++++++++++++ START  LED-2  ++++++++++++++++++++ 
   
   server.on("/socket2On", [](){
@@ -244,17 +244,19 @@ void setup(void){
     delay(100);
     });  
    // +++++++++++++++++++++++ END  LED-2 ++++++++++++++++++++
-   
+   */
    //+++++++++++++++++++++++ START  LED-3  ++++++++++++++++++++ 
 
   server.on("/socket3On", [](){
     maxBrig = 1023;//ledState = true;//digitalWrite(D1_pin, HIGH);
+    Serial.print("1023");
     server.send(200, "text/html", webPage());
     delay(100);    
    
   });
   server.on("/socket3Off", [](){
-    maxBrig = 411;//ledState = false; //digitalWrite(D1_pin, LOW);
+    maxBrig = 70;//ledState = false; //digitalWrite(D1_pin, LOW);
+    Serial.print("70");
     server.send(200, "text/html", webPage());
     delay(100);
 
