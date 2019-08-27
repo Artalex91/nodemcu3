@@ -21,19 +21,25 @@ MDNSResponder mdns;
  ESP8266WebServer server(80);
 
 // пины
-  int D0_pin = 16;
-  int D4_pin = 2;
+  int D0_pin = 16;  // встроенный светодиод
+  int D4_pin = 2;   // встроенный светодиод
   int D1_pin = 5;
 
-  #define radarPin 1
-  #define led1_pin 6
-  #define led2_pin 7
-  #define led3_pin 8
+  #define radarPin 14 //D5
+  #define led1_pin 5  //D1
+  #define led2_pin 4  //D2
+  #define led3_pin 0  //D3
 
 
 // переменные 
   bool ledState = false; // состояние кнопки 3
+  bool ledMillFlag = false;
+  uint32_t ledStateMill = 0;
+  int ledInterval = 5000; 
+
   int ledBrig = 0; //яркость 
+  uint32_t brigMill = 0;
+  uint8_t brigSpeed = 3; //чем меньше - тем быстрее розжиг
 
   bool radar = false; //состояние радара (движение есть/нет)
 
@@ -112,9 +118,32 @@ void readPorts(){
 } 
 
 void task(){
- if (radar == true){
-   
- }
+
+ //задержка нижней подсветки
+    if (radar == true){    //если радар активен
+        ledState = true;    //то led включить
+        ledMillFlag = false; //и флаг опустить
+    }  
+    if (ledState == true && radar == false && ledMillFlag == false){  //если (led включен) и (радар не активен) и (флаг опущен)
+        ledMillFlag = true;                                            // то флаг поднять
+        ledStateMill = millis();                                       //  и запомнить милисекунды
+    }
+    if (millis() - ledStateMill > ledInterval && ledMillFlag == true){  //если (прошло 5000мс) и (флаг поднят)
+        ledMillFlag = false;                                             //  то флаг опустить 
+        ledState = false;                                                //  и led выключить
+    }
+
+ //розжиг
+    if (millis() - brigMill > brigSpeed && ledState == true && ledBrig !=1023){
+      ledBrig++;
+      brigMill=millis();
+    }
+    if (millis() - brigMill > brigSpeed && ledState == false && ledBrig !=0){
+      ledBrig--;
+      brigMill=millis();
+    }
+
+
 }
 
 void writePorts(){
@@ -128,10 +157,15 @@ void setup(void){
   // preparing GPIOs
   pinMode(D0_pin, OUTPUT);
   digitalWrite(D0_pin, LOW);
+
   pinMode(D4_pin, OUTPUT);
   digitalWrite(D4_pin, LOW);
-  pinMode(D1_pin, OUTPUT);
-  //digitalWrite(D1_pin, LOW);
+
+  pinMode(radarPin, INPUT);
+  
+  pinMode(led1_pin, OUTPUT);
+  pinMode(led2_pin, OUTPUT);
+  pinMode(led3_pin, OUTPUT);
  
 
 

@@ -4,7 +4,13 @@
         "PLATFORMIO_CALLER": "vscode"
     },
     "C_Cpp.errorSquiggles": "Enabled",
+<<<<<<< HEAD
     "sync.gist": "de379124e4b02386f1b78e550c848d6a",
     "sync.autoUpload": true,
     "sync.forceDownload": true
+=======
+    "sync.autoDownload": true,
+    "sync.autoUpload": true,
+    "sync.gist": "de379124e4b02386f1b78e550c848d6a"
+>>>>>>> a8b54821f36a51d3c87f3218661eb9f566f42134
 }
