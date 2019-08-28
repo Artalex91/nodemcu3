@@ -42,7 +42,7 @@ MDNSResponder mdns;
   int ledBrig2 = 0; //яркость 2
   int ledBrig3 = 0; //яркость 3
   uint32_t brigMill = 0;
-  uint8_t brigSpeed = 2; //чем меньше - тем быстрее розжиг
+  uint8_t brigSpeed = 1; //чем меньше - тем быстрее розжиг
 
   bool radar = false; //состояние радара (движение есть/нет)
 
@@ -139,29 +139,29 @@ void task(){
  //розжиг
     //led 1
     if (millis() - brigMill > brigSpeed && ledState == true && ledBrig1 !=maxBrig){ 
-      ledBrig1++;
+      ledBrig1=ledBrig1+3;
       brigMill=millis();
     }
     if (millis() - brigMill > brigSpeed && ledState == false && ledBrig1 !=0){
-      ledBrig1--;
+      ledBrig1=ledBrig1-3;
       brigMill=millis();
     }//led 1
     //led 2
-    if (millis() - brigMill > brigSpeed && ledState == true && ledBrig1 > maxBrig/3 && ledBrig2 !=maxBrig){
-      ledBrig2++;
+    if (millis() - brigMill > brigSpeed && ledState == true && ledBrig1 > maxBrig/4 && ledBrig2 !=maxBrig){
+      ledBrig2=ledBrig2+3;
       brigMill=millis();
     }
     if (millis() - brigMill > brigSpeed && ledState == false && ledBrig1 < maxBrig/3 && ledBrig2 !=0){
-      ledBrig2--;
+      ledBrig2=ledBrig2-3;
       brigMill=millis();
     }//led 2
     // led 3
-    if (millis() - brigMill > brigSpeed && ledState == true && ledBrig2 > maxBrig/3 && ledBrig3 !=maxBrig){
-      ledBrig3++;
+    if (millis() - brigMill > brigSpeed && ledState == true && ledBrig2 > maxBrig/4 && ledBrig3 !=maxBrig){
+      ledBrig3=ledBrig3+3;
       brigMill=millis();
     }
     if (millis() - brigMill > brigSpeed && ledState == false && ledBrig2 < maxBrig/3 && ledBrig3 !=0){
-      ledBrig3--;
+      ledBrig3=ledBrig3-3;
       brigMill=millis();
     }//led 3
 
@@ -249,13 +249,15 @@ void setup(void){
 
   server.on("/socket3On", [](){
     maxBrig = 1023;//ledState = true;//digitalWrite(D1_pin, HIGH);
+    brigSpeed = 5;
     Serial.println("1023");
     server.send(200, "text/html", webPage());
     delay(100);    
    
   });
   server.on("/socket3Off", [](){
-    maxBrig = 70;//ledState = false; //digitalWrite(D1_pin, LOW);
+    maxBrig = 60;//ledState = false; //digitalWrite(D1_pin, LOW);
+    brigSpeed = 25;
     Serial.println("70");
     server.send(200, "text/html", webPage());
     delay(100);
