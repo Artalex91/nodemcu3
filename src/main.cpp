@@ -73,7 +73,7 @@ String webPage() // вэб страница
   
   //++++++++++ LED-2  +++++++++++++
   web += "<p style=\"text-align: center;margin-top: 0px;margin-bottom: 5px;\">----LED 2----</p>";
-  if(radar == true)//if (digitalRead(D4_pin) == 1)
+  if (digitalRead(D4_pin) == 1)
   {
     web += "<div style=\"text-align: center;width: 98px;color:white ;padding: 10px 30px;background-color: #43a209;margin: 0 auto;\">ON</div>";
   }
@@ -172,7 +172,7 @@ void writePorts(){
  analogWrite(led1_pin, ledBrig1);
  analogWrite(led2_pin, ledBrig2);
  analogWrite(led3_pin, ledBrig3);
- digitalWrite(D4_pin, radar);
+
 }
 
 void setup(void){
@@ -230,7 +230,7 @@ void setup(void){
     delay(100);
  });   
    //+++++++++++++++++++++++ END  LED-1 ++++++++++++++++++++ 
-    /*
+    
    //+++++++++++++++++++++++ START  LED-2  ++++++++++++++++++++ 
   
   server.on("/socket2On", [](){
@@ -244,19 +244,19 @@ void setup(void){
     delay(100);
     });  
    // +++++++++++++++++++++++ END  LED-2 ++++++++++++++++++++
-   */
+   
    //+++++++++++++++++++++++ START  LED-3  ++++++++++++++++++++ 
 
   server.on("/socket3On", [](){
     maxBrig = 1023;//ledState = true;//digitalWrite(D1_pin, HIGH);
-    Serial.print("1023");
+    Serial.println("1023");
     server.send(200, "text/html", webPage());
     delay(100);    
    
   });
   server.on("/socket3Off", [](){
     maxBrig = 70;//ledState = false; //digitalWrite(D1_pin, LOW);
-    Serial.print("70");
+    Serial.println("70");
     server.send(200, "text/html", webPage());
     delay(100);
 
