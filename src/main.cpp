@@ -248,7 +248,7 @@ void setup(void){
    //+++++++++++++++++++++++ START  LED-3  ++++++++++++++++++++ 
 
   server.on("/socket3On", [](){
-    maxBrig = 1023;//ledState = true;//digitalWrite(D1_pin, HIGH);
+    maxBrig = 1023;   // должно делится на 3
     brigSpeed = 5;
     Serial.println("1023");
     server.send(200, "text/html", webPage());
@@ -256,9 +256,9 @@ void setup(void){
    
   });
   server.on("/socket3Off", [](){
-    maxBrig = 60;//ledState = false; //digitalWrite(D1_pin, LOW);
+    maxBrig = 60;   // должно делится на 3
     brigSpeed = 25;
-    Serial.println("70");
+    Serial.println("60");
     server.send(200, "text/html", webPage());
     delay(100);
 
