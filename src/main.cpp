@@ -21,14 +21,17 @@ MDNSResponder mdns;
  ESP8266WebServer server(80);
 
 // пины
-  int D0_pin = 16;  // встроенный светодиод
+  int D0_pin = 16;  // встроенный светодиод лампочка
   int D4_pin = 2;   // встроенный светодиод
-  int D1_pin = 5;
+ 
 
   #define radarPin 14 //D5
   #define led1_pin 5  //D1
   #define led2_pin 4  //D2
   #define led3_pin 0  //D3
+
+  #define but1Pin 12  //D6 выключатель
+
 
 
 // переменные 
@@ -36,6 +39,10 @@ MDNSResponder mdns;
   bool ledMillFlag = false;
   uint32_t ledStateMill = 0;
   uint16_t ledInterval = 5000; 
+
+  bool svet1 = false;
+  bool but1Old = false;
+  bool but1New = false;
 
   int maxBrig = 1023;
   int ledBrig1 = 0; //яркость 1
@@ -60,7 +67,7 @@ String webPage() // вэб страница
   web += "<h1 style=\"text-align: center;font-family: Open sans;font-weight: 100;font-size: 20px;\">ESP8266 Web Server</h1><div>";
   //++++++++++ LED-1  +++++++++++++
   web += "<p style=\"text-align: center;margin-top: 0px;margin-bottom: 5px;\">----LED 1----</p>";
-  if (digitalRead(D0_pin) == 1)
+  if (digitalRead(D0_pin) == 0)
   {
     web += "<div style=\"text-align: center;width: 98px;color:white ;padding: 10px 30px;background-color: #43a209;margin: 0 auto;\">ON</div>";
   }
@@ -73,7 +80,7 @@ String webPage() // вэб страница
   
   //++++++++++ LED-2  +++++++++++++
   web += "<p style=\"text-align: center;margin-top: 0px;margin-bottom: 5px;\">----LED 2----</p>";
-  if (digitalRead(D4_pin) == 1)
+  if (digitalRead(D4_pin) == 0)
   {
     web += "<div style=\"text-align: center;width: 98px;color:white ;padding: 10px 30px;background-color: #43a209;margin: 0 auto;\">ON</div>";
   }
@@ -118,9 +125,17 @@ String webPage() // вэб страница
 
 void readPorts(){
  radar = digitalRead(radarPin);
+ but1New = digitalRead(but1Pin);
 } 
 
 void task(){
+
+  // svet1
+    if(but1New != but1Old){
+      svet1 = !svet1;
+      digitalWrite(D0_pin, svet1);
+      but1Old = but1New;
+    } 
 
  //задержка нижней подсветки
     if (radar == true){    //если радар активен
@@ -173,6 +188,8 @@ void writePorts(){
  analogWrite(led2_pin, ledBrig2);
  analogWrite(led3_pin, ledBrig3);
 
+ 
+
 }
 
 void setup(void){
@@ -184,6 +201,7 @@ void setup(void){
   digitalWrite(D4_pin, LOW);
 
   pinMode(radarPin, INPUT);
+  pinMode(but1Pin, INPUT);
   
   pinMode(led1_pin, OUTPUT);
   pinMode(led2_pin, OUTPUT);
@@ -219,13 +237,13 @@ void setup(void){
     server.send(200, "text/html", webPage());
   });
   server.on("/socket1On", [](){
-    digitalWrite(D0_pin, HIGH);
+    digitalWrite(D0_pin, LOW);
     server.send(200, "text/html", webPage());
     delay(100);
     
   });
   server.on("/socket1Off", [](){
-    digitalWrite(D0_pin, LOW);
+    digitalWrite(D0_pin, HIGH);
     server.send(200, "text/html", webPage());
     delay(100);
  });   
@@ -234,12 +252,12 @@ void setup(void){
    //+++++++++++++++++++++++ START  LED-2  ++++++++++++++++++++ 
   
   server.on("/socket2On", [](){
-    digitalWrite(D4_pin, HIGH);
+    digitalWrite(D4_pin, LOW);
     server.send(200, "text/html", webPage());
     delay(100);    
   });
   server.on("/socket2Off", [](){
-    digitalWrite(D4_pin, LOW);
+    digitalWrite(D4_pin, HIGH);
     server.send(200, "text/html", webPage());
     delay(100);
     });  
