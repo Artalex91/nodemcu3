@@ -195,10 +195,10 @@ void writePorts(){
 void setup(void){
   // preparing GPIOs
   pinMode(D0_pin, OUTPUT);
-  digitalWrite(D0_pin, LOW);
+  digitalWrite(D0_pin, HIGH); // off
 
   pinMode(D4_pin, OUTPUT);
-  digitalWrite(D4_pin, LOW);
+  digitalWrite(D4_pin, HIGH); // off
 
   pinMode(radarPin, INPUT);
   pinMode(but1Pin, INPUT);
