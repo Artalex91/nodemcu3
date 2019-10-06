@@ -21,8 +21,9 @@ MDNSResponder mdns;
  ESP8266WebServer server(80);
 
 // пины
-  int D0_pin = 16;  // встроенный светодиод лампочка
-  int D4_pin = 2;   // встроенный светодиод
+  int D0_pin = 16;  // встроенный светодиод люстра мал комн
+  int D4_pin = 2;   // встроенный светодиод люстра кухня
+   
  
 
   #define radarPin 14 //D5
@@ -30,8 +31,8 @@ MDNSResponder mdns;
   #define led2_pin 4  //D2
   #define led3_pin 0  //D3
 
-  #define but1Pin 12  //D6 выключатель
-
+  #define but1Pin 12  //D6 выключатель мал. коната
+  #define but2Pin 13  //D7 выключатель кухня
 
 
 // переменные 
@@ -41,8 +42,12 @@ MDNSResponder mdns;
   uint16_t ledInterval = 5000; 
 
   bool svet1 = false;
-  bool but1Old = false;
-  bool but1New = false;
+  bool but1Old = HIGH;  // выключатель выключен при high
+  bool but1New = HIGH;  //
+
+  bool svet2 = false;
+  bool but2Old = HIGH;  // выключатель выключен при HIGH
+  bool but2New = HIGH;
 
   int maxBrig = 1023;
   int ledBrig1 = 0; //яркость 1
@@ -126,16 +131,23 @@ String webPage() // вэб страница
 void readPorts(){
  radar = digitalRead(radarPin);
  but1New = digitalRead(but1Pin);
+ but2New = digitalRead(but2Pin);
 } 
 
 void task(){
 
-  // svet1
+  // svet1  мал. комната
     if(but1New != but1Old){
       svet1 = !svet1;
       digitalWrite(D0_pin, svet1);
       but1Old = but1New;
     } 
+  // svet2  кухня
+    if(but2New != but2Old){
+      svet2 = !svet2;
+      digitalWrite(D4_pin, svet2);
+      but2Old = but2New;
+    }
 
  //задержка нижней подсветки
     if (radar == true){    //если радар активен
@@ -202,6 +214,7 @@ void setup(void){
 
   pinMode(radarPin, INPUT);
   pinMode(but1Pin, INPUT);
+  pinMode(but2Pin, INPUT);
   
   pinMode(led1_pin, OUTPUT);
   pinMode(led2_pin, OUTPUT);
