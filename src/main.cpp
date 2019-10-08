@@ -32,7 +32,7 @@ MDNSResponder mdns;
   #define led3_pin 0  //D3
 
   #define but1Pin 12  //D6 выключатель мал. коната
-  #define but2Pin 13  //D7 выключатель кухня
+  #define but2Pin 15  //D7 выключатель кухня
 
 
 // переменные 
@@ -41,11 +41,11 @@ MDNSResponder mdns;
   uint32_t ledStateMill = 0;
   uint16_t ledInterval = 5000; 
 
-  bool svet1 = false;
+  bool svet1 = true;
   bool but1Old = HIGH;  // выключатель выключен при high
   bool but1New = HIGH;  //
 
-  bool svet2 = false;
+  bool svet2 = true;
   bool but2Old = HIGH;  // выключатель выключен при HIGH
   bool but2New = HIGH;
 
@@ -166,7 +166,7 @@ void task(){
  //розжиг
     //led 1
     if (millis() - brigMill > brigSpeed && ledState == true && ledBrig1 !=maxBrig){ 
-      ledBrig1=ledBrig1+3;
+       ledBrig1=ledBrig1+3;
       brigMill=millis();
     }
     if (millis() - brigMill > brigSpeed && ledState == false && ledBrig1 !=0){
